@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QWidget, QLabel, QStackedWidget, QGridLayout
 from PyQt5.QtCore import Qt
 
-from cell import Cell
+from .cell import Cell
 
 
 class BoardWindow(QWidget):

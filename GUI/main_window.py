@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QWidget, QApplication, QStackedWidget
 
-from board_window import BoardWindow
-from pre_game_window import PreGameWindow
+from .board_window import BoardWindow
+from .pre_game_window import PreGameWindow
 
 
 class MainWindow(QMainWindow):
