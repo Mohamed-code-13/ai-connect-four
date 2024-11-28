@@ -1,6 +1,8 @@
 from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QWidget, QLabel, QStackedWidget, QGridLayout
 from PyQt5.QtCore import Qt
 
+from connect_4_solver.engine import Engine
+
 from .cell import Cell
 
 
@@ -8,6 +10,7 @@ class BoardWindow(QWidget):
     def __init__(self, settings):
         super().__init__()
         self.settings = settings
+        self.engine = Engine('0' * 42)
 
         self.init_ui()
 
@@ -59,6 +62,13 @@ class BoardWindow(QWidget):
                 self.cells[r][c].setStyleSheet(
                     f'background-color: {self.settings['human_color' if self.turn == 'Human' else 'computer_color']}; border: 1px solid black;')
                 self.cells[r][c].update()
+
+                self.move(r, c)
+
+                if self.engine.check_game_end():
+                    print(self.engine.get_winner())
+                    break
+
                 self.switch_turns()
                 break
 
@@ -68,6 +78,11 @@ class BoardWindow(QWidget):
 
         if self.turn == 'Computer':
             self.move_computer()
+
+    def move(self, r, c):
+        player = '1' if self.turn == self.settings['starting_player'] else '2'
+        position = r * self.cols + c
+        self.engine.move(position, player, self.turn)
 
     def move_computer(self):
         pass
