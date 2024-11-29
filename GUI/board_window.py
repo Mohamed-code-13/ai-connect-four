@@ -10,9 +10,12 @@ class BoardWindow(QWidget):
     def __init__(self, settings):
         super().__init__()
         self.settings = settings
-        self.engine = Engine('0' * 42)
+        self.engine = Engine(
+            '0' * 42, int(self.settings['depth']), bool(self.settings['alpha_beta']))
 
         self.init_ui()
+        if self.turn == 'Computer':
+            self.computer_move()
 
     def init_ui(self):
         self.setWindowTitle("Connect 4 AI - Game Board")

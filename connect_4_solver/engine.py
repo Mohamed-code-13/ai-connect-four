@@ -2,8 +2,10 @@ from connect_4_solver.minimax import MiniMax
 
 
 class Engine:
-    def __init__(self, board):
+    def __init__(self, board, depth=5, use_pruning=True):
         self.board = board
+        self.depth = depth
+        self.use_pruning = use_pruning
         self.rows = 6
         self.cols = 7
         self.minimax = MiniMax()
@@ -18,8 +20,9 @@ class Engine:
         self.update_score(position, name)
 
     def computer_move(self, player, name):
-        _, c = self.minimax.solve(self.board, 5, float('-inf'),
-                                  float('inf'), False, True, player)
+        print(self.depth, self.use_pruning)
+        _, c = self.minimax.solve(self.board, self.depth, float('-inf'),
+                                  float('inf'), self.use_pruning, True, player)
         pos = self.get_position(c)
         self.move(pos, player, name)
         return c

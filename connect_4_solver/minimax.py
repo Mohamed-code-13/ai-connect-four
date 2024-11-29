@@ -19,7 +19,7 @@ class MiniMax:
                 new_state = self.simulate_move(state, c, player)
                 eval, _ = self.solve(new_state, depth - 1, alpha, beta,
                                      use_pruning, False, '2' if player == '1' else '1')
-                if eval >= maxEval:
+                if eval > maxEval:
                     maxEval = eval
                     res = c
 
@@ -36,7 +36,7 @@ class MiniMax:
                 new_state = self.simulate_move(state, c, player)
                 eval, _ = self.solve(new_state, depth - 1, alpha, beta,
                                      use_pruning, True, '2' if player == '1' else '1')
-                if eval <= minEval:
+                if eval < minEval:
                     minEval = eval
                     res = c
 
