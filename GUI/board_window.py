@@ -7,11 +7,12 @@ from .cell import Cell
 
 
 class BoardWindow(QWidget):
-    def __init__(self, settings):
+    def __init__(self, settings, update_tree, board='0'*42):
         super().__init__()
         self.settings = settings
+        self.update_tree = update_tree
         self.engine = Engine(
-            '0' * 42, int(self.settings['depth']), bool(self.settings['alpha_beta']))
+            board, int(self.settings['depth']), bool(self.settings['alpha_beta']))
 
         self.init_ui()
         if self.turn == 'Computer':
@@ -48,10 +49,19 @@ class BoardWindow(QWidget):
         grid_layout = QGridLayout()
         grid_layout.setSpacing(0)
         cells = [[0] * self.cols for _ in range(self.rows)]
+        i = 0
 
         for r in range(self.rows):
             for c in range(self.cols):
+                val = self.engine.board[i]
+
                 cells[r][c] = Cell(r, c, self.on_clicked)
+                if val == '1' or val == '2':
+                    cells[r][c].tile = 'Human' if val == '1' else 'Computer'
+                    cells[r][c].setStyleSheet(
+                        f'background-color: {self.settings['human_color' if val == '1' else 'computer_color']}; border: 1px solid black;')
+                i += 1
+
                 grid_layout.addWidget(cells[r][c], r, c)
         return grid_layout, cells
 
@@ -113,6 +123,8 @@ class BoardWindow(QWidget):
         self.engine.move(position, player, self.turn)
 
     def computer_move(self):
+        board = self.engine.board
         player = '1' if self.turn == self.settings['starting_player'] else '2'
-        c = self.engine.computer_move(player, self.turn)
-        self.update_move(c)
+        res = self.engine.computer_move(player, self.turn)
+        self.update_move(res['column'])
+        self.update_tree(res['tree'], board)

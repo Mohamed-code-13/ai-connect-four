@@ -30,11 +30,16 @@ class Engine:
         end = time.time()
         print('Expanded Nodes:', self.minimax.expanded_nodes)
         print('Time:', (end-begin), 'sec')
-        print(self.minimax.tree)
+        # print(self.minimax.tree)
 
         pos = self.get_position(c)
         self.move(pos, player, name)
-        return c
+        return {
+            'column': c,
+            'time': end-begin,
+            'expanded_nodes': self.minimax.expanded_nodes,
+            'tree': self.minimax.tree
+        }
 
     def get_position(self, c):
         for r in range(self.rows - 1, -1, -1):
@@ -45,7 +50,6 @@ class Engine:
         self.score[player] += self.calc_score_horizontally(position)
         self.score[player] += self.calc_score_vertically(position)
         self.score[player] += self.calc_score_diagonally(position)
-        print(self.score, player)
 
     def calc_score_horizontally(self, position):
         p = self.board[position]
