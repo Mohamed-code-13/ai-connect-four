@@ -1,3 +1,4 @@
+import time
 from connect_4_solver.minimax import MiniMax
 
 
@@ -20,9 +21,17 @@ class Engine:
         self.update_score(position, name)
 
     def computer_move(self, player, name):
-        print(self.depth, self.use_pruning)
+        self.minimax.expanded_nodes = 0
+        self.minimax.tree = {}
+
+        begin = time.time()
         _, c = self.minimax.solve(self.board, self.depth, float('-inf'),
                                   float('inf'), self.use_pruning, True, player)
+        end = time.time()
+        print('Expanded Nodes:', self.minimax.expanded_nodes)
+        print('Time:', (end-begin), 'sec')
+        print(self.minimax.tree)
+
         pos = self.get_position(c)
         self.move(pos, player, name)
         return c
