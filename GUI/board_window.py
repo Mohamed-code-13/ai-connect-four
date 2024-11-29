@@ -1,6 +1,8 @@
 from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QWidget, QLabel, QStackedWidget, QGridLayout
 from PyQt5.QtCore import Qt
 
+from connect_4_solver.engine import Engine
+
 from .cell import Cell
 
 
@@ -8,8 +10,12 @@ class BoardWindow(QWidget):
     def __init__(self, settings):
         super().__init__()
         self.settings = settings
+        self.engine = Engine(
+            '0' * 42, int(self.settings['depth']), bool(self.settings['alpha_beta']))
 
         self.init_ui()
+        if self.turn == 'Computer':
+            self.computer_move()
 
     def init_ui(self):
         self.setWindowTitle("Connect 4 AI - Game Board")
@@ -50,24 +56,63 @@ class BoardWindow(QWidget):
         return grid_layout, cells
 
     def on_clicked(self, c):
-        # if self.turn != 'Human':
-        #     return
+        if self.turn != 'Human':
+            return
 
-        for r in range(self.rows - 1, -1, -1):
-            if not self.cells[r][c].tile:
-                self.cells[r][c].tile = 'Human'
-                self.cells[r][c].setStyleSheet(
-                    f'background-color: {self.settings['human_color' if self.turn == 'Human' else 'computer_color']}; border: 1px solid black;')
-                self.cells[r][c].update()
-                self.switch_turns()
-                break
+        self.update_move(c)
+        # for r in range(self.rows - 1, -1, -1):
+        #     if not self.cells[r][c].tile:
+        #         self.cells[r][c].tile = 'Human'
+        #         self.cells[r][c].setStyleSheet(
+        #             f'background-color: {self.settings['human_color' if self.turn == 'Human' else 'computer_color']}; border: 1px solid black;')
+        #         self.cells[r][c].update()
+
+        #         self.move(r, c)
+
+        #         if self.engine.check_game_end():
+        #             print(self.engine.get_winner())
+        #             break
+
+        #         self.switch_turns()
+        #         break
 
     def switch_turns(self):
         self.turn = 'Computer' if self.turn == 'Human' else 'Human'
         self.turn_label.setText(f'Turn: {self.turn}')
 
         if self.turn == 'Computer':
-            self.move_computer()
+            self.computer_move()
 
-    def move_computer(self):
-        pass
+    def update_move(self, c):
+        for r in range(self.rows - 1, -1, -1):
+            if not self.cells[r][c].tile:
+                self.cells[r][c].tile = self.turn
+                self.cells[r][c].setStyleSheet(
+                    f'background-color: {self.settings['human_color' if self.turn == 'Human' else 'computer_color']}; border: 1px solid black;')
+                self.cells[r][c].update()
+
+                if self.turn == 'Human':
+                    self.move(r, c)
+                # else:
+                #     self.computer_move()
+
+                self.human_label.setText(
+                    f'Human: {self.engine.score['Human']}')
+                self.computer_label.setText(
+                    f'Computer: {self.engine.score['Computer']}')
+                if self.engine.check_game_end():
+                    print(self.engine.get_winner())
+                    break
+
+                self.switch_turns()
+                break
+
+    def move(self, r, c):
+        player = '1' if self.turn == self.settings['starting_player'] else '2'
+        position = r * self.cols + c
+        self.engine.move(position, player, self.turn)
+
+    def computer_move(self):
+        player = '1' if self.turn == self.settings['starting_player'] else '2'
+        c = self.engine.computer_move(player, self.turn)
+        self.update_move(c)

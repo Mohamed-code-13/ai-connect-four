@@ -82,9 +82,9 @@ class Heuristic:
         if count[opponent] > 0:
             score = 0
         elif count[player] == 4:
-            score = 1000
+            score = 100000
         elif count[player] == 3:
-            score = 800
+            score = 1000
         elif count[player] == 2:
             score = 500
         elif count[player] == 1:
