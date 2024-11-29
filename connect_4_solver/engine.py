@@ -18,7 +18,7 @@ class Engine:
         self.update_score(position, name)
 
     def computer_move(self, player, name):
-        _, c = self.minimax.solve(self.board, 1, float('-inf'),
+        _, c = self.minimax.solve(self.board, 5, float('-inf'),
                                   float('inf'), False, True, player)
         pos = self.get_position(c)
         self.move(pos, player, name)
