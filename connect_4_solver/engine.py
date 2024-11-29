@@ -1,9 +1,12 @@
+from connect_4_solver.minimax import MiniMax
+
+
 class Engine:
     def __init__(self, board):
         self.board = board
         self.rows = 6
         self.cols = 7
-        self.minimax = None
+        self.minimax = MiniMax()
         self.score = {
             'Human': 0,
             'Computer': 0
@@ -14,8 +17,17 @@ class Engine:
             player + self.board[position + 1:]
         self.update_score(position, name)
 
-    def computer_move(self, player):
-        pass
+    def computer_move(self, player, name):
+        _, c = self.minimax.solve(self.board, 1, float('-inf'),
+                                  float('inf'), False, True, player)
+        pos = self.get_position(c)
+        self.move(pos, player, name)
+        return c
+
+    def get_position(self, c):
+        for r in range(self.rows - 1, -1, -1):
+            if self.board[r * self.cols + c] == '0':
+                return r * self.cols + c
 
     def update_score(self, position, player):
         self.score[player] += self.calc_score_horizontally(position)
@@ -128,8 +140,8 @@ class Engine:
         return True
 
     def get_winner(self):
-        if self.p1_score > self.p2_score:
-            return 'Player 1 Won!'
-        elif self.p1_score < self.p2_score:
-            return 'Player 2 Won!'
+        if self.score['Human'] > self.score['Computer']:
+            return 'Human Won!'
+        elif self.score['Human'] < self.score['Computer']:
+            return 'Computer Won!'
         return 'It\'s Tie!'
