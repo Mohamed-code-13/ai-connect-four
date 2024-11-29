@@ -1,7 +1,19 @@
 from PyQt5.QtWidgets import QGridLayout, QVBoxLayout, QHBoxLayout,  QWidget, QLabel
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, pyqtSignal
 
 from GUI.cell import Cell
+
+
+class ClickableWidget(QWidget):
+    clicked = pyqtSignal()  # Define a custom signal
+
+    def __init__(self):
+        super().__init__()
+
+    def mousePressEvent(self, event):
+        print("CLICKED")
+        super().mousePressEvent(event)
+        self.clicked.emit()
 
 
 class TreeVisualizer(QWidget):
@@ -20,7 +32,7 @@ class TreeVisualizer(QWidget):
 
     def init_ui(self):
 
-        if not self.tree:
+        if not self.tree or self.board not in self.tree:
             return
 
         for w in self.arr:
@@ -38,9 +50,11 @@ class TreeVisualizer(QWidget):
         h = QHBoxLayout()
         for nei, eval in self.tree[self.board]['children']:
             grid_layout1, self.cells = self.create_board(nei)
-            widget1 = QWidget()
+            widget1 = ClickableWidget()
             widget1.setLayout(grid_layout1)
             widget1.setFixedSize(20 * self.cols, 20 * self.rows)
+            widget1.clicked.connect(
+                lambda nei_val=nei: self.expand_node(nei_val))
 
             eval_label = QLabel(f"Eval: {eval}")
             eval_label.setAlignment(Qt.AlignCenter)
@@ -85,5 +99,10 @@ class TreeVisualizer(QWidget):
     def update_tree(self, tree, board):
         self.tree = tree
         self.board = board
+        self.init_ui()
+        self.update()
+
+    def expand_node(self, state):
+        self.board = state
         self.init_ui()
         self.update()

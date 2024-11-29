@@ -70,21 +70,6 @@ class BoardWindow(QWidget):
             return
 
         self.update_move(c)
-        # for r in range(self.rows - 1, -1, -1):
-        #     if not self.cells[r][c].tile:
-        #         self.cells[r][c].tile = 'Human'
-        #         self.cells[r][c].setStyleSheet(
-        #             f'background-color: {self.settings['human_color' if self.turn == 'Human' else 'computer_color']}; border: 1px solid black;')
-        #         self.cells[r][c].update()
-
-        #         self.move(r, c)
-
-        #         if self.engine.check_game_end():
-        #             print(self.engine.get_winner())
-        #             break
-
-        #         self.switch_turns()
-        #         break
 
     def switch_turns(self):
         self.turn = 'Computer' if self.turn == 'Human' else 'Human'
@@ -118,13 +103,13 @@ class BoardWindow(QWidget):
                 break
 
     def move(self, r, c):
-        player = '1' if self.turn == self.settings['starting_player'] else '2'
+        player = '1'
         position = r * self.cols + c
         self.engine.move(position, player, self.turn)
 
     def computer_move(self):
         board = self.engine.board
-        player = '1' if self.turn == self.settings['starting_player'] else '2'
+        player = '2'
         res = self.engine.computer_move(player, self.turn)
         self.update_move(res['column'])
         self.update_tree(res['tree'], board)
