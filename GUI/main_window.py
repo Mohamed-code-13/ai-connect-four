@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QHBoxLayout,  QWidget, QApplication, QStackedWidget
+from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QHBoxLayout,  QWidget, QApplication, QStackedWidget, QPushButton
 
 from GUI.tree_visualizer import TreeVisualizer
 
@@ -36,9 +36,15 @@ class MainWindow(QMainWindow):
                                          '000000000000000012000002100000122000211201')
         board = BoardWindow(settings, tree_visualizer.update_tree)
         board.setFixedSize(600, 600)
+
+        side_panel = QVBoxLayout()
+        # self.pop_button = QPushButton("Go Back")
+        side_panel.addWidget(tree_visualizer)
+        # side_panel.addWidget(self.pop_button)
+
         row = QHBoxLayout()
         row.addWidget(board)
-        row.addWidget(tree_visualizer)
+        row.addLayout(side_panel)
 
         w = QWidget()
         w.setLayout(row)

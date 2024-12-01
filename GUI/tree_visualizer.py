@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QGridLayout, QVBoxLayout, QHBoxLayout,  QWidget, QLabel
+from PyQt5.QtWidgets import QGridLayout, QPushButton, QVBoxLayout, QHBoxLayout,  QWidget, QLabel
 from PyQt5.QtCore import Qt, pyqtSignal
 
 from GUI.cell import Cell
@@ -25,6 +25,7 @@ class TreeVisualizer(QWidget):
         self.rows = 6
         self.cols = 7
         self.arr = []
+        self.prev = []
         self.layout = QVBoxLayout()
         self.setLayout(self.layout)
 
@@ -47,12 +48,17 @@ class TreeVisualizer(QWidget):
         self.arr.append(grid_layout)
         self.layout.addWidget(grid_layout, alignment=Qt.AlignCenter)
 
+        if 'children' not in self.tree[self.board]:
+            return
+        
         h = QHBoxLayout()
         for nei, eval in self.tree[self.board]['children']:
             grid_layout1, self.cells = self.create_board(nei)
             widget1 = self.make_clickable(grid_layout1)
             # widget1.setLayout(grid_layout1)
             widget1.setFixedSize(20 * self.cols, 20 * self.rows)
+            # widget1.clicked.connect(
+            #     lambda nei_val=nei: (self.prev.append(self.board), print(self.prev), self.expand_node(nei_val)))
             widget1.clicked.connect(
                 lambda nei_val=nei: self.expand_node(nei_val))
 
@@ -72,6 +78,11 @@ class TreeVisualizer(QWidget):
 
         self.arr.append(widget)
         self.layout.addWidget(widget)
+
+        go_back_button = QPushButton("Go Back")
+        go_back_button.clicked.connect(self.go_back)
+        self.arr.append(go_back_button)
+        self.layout.addWidget(go_back_button, alignment=Qt.AlignCenter)
     
     def make_clickable(self, widget):
         # Create a new ClickableWidget
@@ -138,3 +149,11 @@ class TreeVisualizer(QWidget):
         self.board = state
         self.init_ui()
         self.update()
+
+    def go_back(self):
+        # Check if there is a previous state to revert to
+        if self.prev:
+            self.board = self.prev.pop()  # Revert to the last parent state
+            print(self.prev)
+            self.init_ui()  # Reinitialize the UI to reflect the parent state
+            self.update()
