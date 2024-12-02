@@ -11,7 +11,6 @@ class ClickableWidget(QWidget):
         super().__init__()
 
     def mousePressEvent(self, event):
-        print("CLICKED")
         super().mousePressEvent(event)
         self.clicked.emit()
 
@@ -55,28 +54,33 @@ class TreeVisualizer(QWidget):
 
         if 'children' not in self.tree[self.board]:
             return
-        
+
         h = QHBoxLayout()
-        for nei, eval in self.tree[self.board]['children']:
-            grid_layout1, self.cells = self.create_board(nei)
-            widget1 = self.make_clickable(grid_layout1)
-            # widget1.setLayout(grid_layout1)
-            widget1.setFixedSize(20 * self.cols, 20 * self.rows)
-            widget1.clicked.connect(
-                lambda nei_val=nei: (self.prev.append(self.board), self.expand_node(nei_val)))
-            # widget1.clicked.connect(
-            #     lambda nei_val=nei: self.expand_node(nei_val))
+        if self.settings['is_minimax']:
+            self.draw_minimax(h)
+        else:
+            self.draw_expected_minimax(h)
+        # for nei, eval in self.tree[self.board]['children']:
+        #     grid_layout1, self.cells = self.create_board(nei)
+        #     widget1 = self.make_clickable(grid_layout1)
+        #     # widget1.setLayout(grid_layout1)
+        #     widget1.setFixedSize(20 * self.cols, 20 * self.rows)
+        #     widget1.clicked.connect(
+        #         lambda nei_val=nei: (self.prev.append(self.board), self.expand_node(nei_val)))
+        #     # widget1.clicked.connect(
+        #     #     lambda nei_val=nei: self.expand_node(nei_val))
 
-            data_label = QLabel(f"Eval: {eval}\nAlpha: {self.tree[self.board]['alpha']}\nBeta: {self.tree[self.board]['beta']}")
-            data_label.setAlignment(Qt.AlignCenter)
+        #     data_label = QLabel(f"Eval: {eval}\nAlpha: {
+        #                         self.tree[self.board]['alpha']}\nBeta: {self.tree[self.board]['beta']}")
+        #     data_label.setAlignment(Qt.AlignCenter)
 
-            vbox = QVBoxLayout()
-            vbox.addWidget(widget1, alignment=Qt.AlignCenter)
-            vbox.addWidget(data_label, alignment=Qt.AlignCenter)
+        #     vbox = QVBoxLayout()
+        #     vbox.addWidget(widget1, alignment=Qt.AlignCenter)
+        #     vbox.addWidget(data_label, alignment=Qt.AlignCenter)
 
-            container_widget = QWidget()
-            container_widget.setLayout(vbox)
-            h.addWidget(container_widget, alignment=Qt.AlignCenter)
+        #     container_widget = QWidget()
+        #     container_widget.setLayout(vbox)
+        #     h.addWidget(container_widget, alignment=Qt.AlignCenter)
 
         widget = QWidget()
         widget.setLayout(h)
@@ -99,11 +103,61 @@ class TreeVisualizer(QWidget):
         go_back_button.clicked.connect(self.go_back)
         self.arr.append(go_back_button)
         self.layout.addWidget(go_back_button, alignment=Qt.AlignCenter)
-    
+
+    def draw_minimax(self, hBox):
+        for nei, eval in self.tree[self.board]['children']:
+            grid_layout1, self.cells = self.create_board(nei)
+            widget1 = self.make_clickable(grid_layout1)
+            # widget1.setLayout(grid_layout1)
+            widget1.setFixedSize(20 * self.cols, 20 * self.rows)
+            widget1.clicked.connect(
+                lambda nei_val=nei: (self.prev.append(self.board), self.expand_node(nei_val)))
+            # widget1.clicked.connect(
+            #     lambda nei_val=nei: self.expand_node(nei_val))
+
+            data_label = QLabel(f"Eval: {eval}\nAlpha: {
+                                self.tree[self.board]['alpha']}\nBeta: {self.tree[self.board]['beta']}")
+            data_label.setAlignment(Qt.AlignCenter)
+
+            vbox = QVBoxLayout()
+            vbox.addWidget(widget1, alignment=Qt.AlignCenter)
+            vbox.addWidget(data_label, alignment=Qt.AlignCenter)
+
+            container_widget = QWidget()
+            container_widget.setLayout(vbox)
+            hBox.addWidget(container_widget, alignment=Qt.AlignCenter)
+
+    def draw_expected_minimax(self, hBox):
+        for nei, eval, probs in self.tree[self.board]['children']:
+            grid_layout1, self.cells = self.create_board(nei)
+            widget1 = self.make_clickable(grid_layout1)
+            # widget1.setLayout(grid_layout1)
+            widget1.setFixedSize(20 * self.cols, 20 * self.rows)
+            widget1.clicked.connect(
+                lambda nei_val=nei: (self.prev.append(self.board), self.expand_node(nei_val)))
+            # widget1.clicked.connect(
+            #     lambda nei_val=nei: self.expand_node(nei_val))
+
+            label_str = f"Eval: {eval}\nAlpha: {
+                self.tree[self.board]['alpha']}\nBeta: {self.tree[self.board]['beta']}"
+            for pr, ev in probs:
+                label_str += f"\n{pr}: {ev}"
+
+            data_label = QLabel(label_str)
+            data_label.setAlignment(Qt.AlignCenter)
+
+            vbox = QVBoxLayout()
+            vbox.addWidget(widget1, alignment=Qt.AlignCenter)
+            vbox.addWidget(data_label, alignment=Qt.AlignCenter)
+
+            container_widget = QWidget()
+            container_widget.setLayout(vbox)
+            hBox.addWidget(container_widget, alignment=Qt.AlignCenter)
+
     def make_clickable(self, widget):
         # Create a new ClickableWidget
         clickable = ClickableWidget()
-        
+
         # Set the same geometry and parent as the existing widget
         clickable.setGeometry(widget.geometry())
         if widget.parent():
@@ -115,7 +169,7 @@ class TreeVisualizer(QWidget):
         layout.addWidget(widget)
 
         return clickable
-    
+
     def create_board(self, state):
         container = QWidget()
         container.setStyleSheet("background-color: #001F54;")
@@ -135,7 +189,8 @@ class TreeVisualizer(QWidget):
 
                 # Apply circular style
                 border_color = '#001F54'  # Oxford Blue
-                background_color = self.settings['human_color'] if val == '1' else self.settings['computer_color'] if val == '2' else '#FFFFFF'
+                background_color = self.settings['human_color'] if val == '1' else self.settings[
+                    'computer_color'] if val == '2' else '#FFFFFF'
                 cells[r][c].setStyleSheet(f"""
                     background-color: {background_color};
                     border: 2px solid {border_color};

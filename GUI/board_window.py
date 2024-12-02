@@ -6,14 +6,23 @@ from connect_4_solver.engine import Engine
 
 from .cell import Cell
 
+board = [
+    ['0', '0', '0', '0', '0', '0', '0'],
+    ['0', '0', '0', '0', '0', '0', '0'],
+    ['0', '0', '0', '0', '0', '0', '0'],
+    ['0', '0', '0', '0', '0', '0', '0'],
+    ['0', '0', '0', '0', '0', '0', '0'],
+    ['0', '0', '0', '0', '0', '0', '0'],
+]
+
 
 class BoardWindow(QWidget):
-    def __init__(self, settings, update_tree, board='0'*42):
+    def __init__(self, settings, update_tree, board=board):
         super().__init__()
         self.settings = settings
         self.update_tree = update_tree
         self.engine = Engine(
-            board, int(self.settings['depth']), bool(self.settings['alpha_beta']))
+            self.create_board_str(board), int(self.settings['depth']), bool(self.settings['alpha_beta']), bool(self.settings['is_minimax']))
 
         self.init_ui()
         if self.turn == 'Computer':
@@ -34,23 +43,27 @@ class BoardWindow(QWidget):
 
         clabel = QLabel("COMPUTER")
         clabel.setFont(QFont("Press Start 2P", 20))
-        clabel.setStyleSheet("font-size: 20px; font-weight: bold; color: #FF5733;")
+        clabel.setStyleSheet(
+            "font-size: 20px; font-weight: bold; color: #FF5733;")
         clabel.setAlignment(Qt.AlignCenter)
         cscore.addWidget(clabel)
         self.computer_label = QLabel(f"{self.computer_score}")
         self.computer_label.setFont(QFont("Press Start 2P", 20))
-        self.computer_label.setStyleSheet("font-size: 20px; font-weight: bold; color: #FF5733;")
+        self.computer_label.setStyleSheet(
+            "font-size: 20px; font-weight: bold; color: #FF5733;")
         self.computer_label.setAlignment(Qt.AlignCenter)
         cscore.addWidget(self.computer_label)
 
         hlabel = QLabel("HUMAN")
         hlabel.setFont(QFont("Press Start 2P", 20))
-        hlabel.setStyleSheet("font-size: 20px; font-weight: bold; color: #1E90FF;")
+        hlabel.setStyleSheet(
+            "font-size: 20px; font-weight: bold; color: #1E90FF;")
         hlabel.setAlignment(Qt.AlignCenter)
         hscore.addWidget(hlabel)
         self.human_label = QLabel(f"{self.human_score}")
         self.human_label.setFont(QFont("Press Start 2P", 20))
-        self.human_label.setStyleSheet("font-size: 20px; font-weight: bold; color: #1E90FF;")
+        self.human_label.setStyleSheet(
+            "font-size: 20px; font-weight: bold; color: #1E90FF;")
         self.human_label.setAlignment(Qt.AlignCenter)
         hscore.addWidget(self.human_label)
 
@@ -61,7 +74,7 @@ class BoardWindow(QWidget):
         self.turn_label.setFont(QFont("Press Start 2P", 20))
         self.turn_label.setStyleSheet("font-size: 20px; font-weight: bold;")
         self.turn_label.setAlignment(Qt.AlignCenter)
-        
+
         self.grid_layout, self.cells = self.create_board()
 
         layout = QVBoxLayout()
@@ -92,7 +105,8 @@ class BoardWindow(QWidget):
 
                 # Apply circular style
                 border_color = '#055c9d'
-                background_color = self.settings['human_color'] if val == '1' else self.settings['computer_color'] if val == '2' else '#FFFFFF'
+                background_color = self.settings['human_color'] if val == '1' else self.settings[
+                    'computer_color'] if val == '2' else '#FFFFFF'
                 cells[r][c].setStyleSheet(f"""
                     background-color: {background_color};
                     border: 4px solid {border_color};
@@ -158,3 +172,13 @@ class BoardWindow(QWidget):
         res = self.engine.computer_move(player, self.turn)
         self.update_move(res['column'])
         self.update_tree(res['tree'], board)
+
+    def create_board_str(self, board):
+        res = [''] * 42
+        k = 0
+        for i in range(len(board)):
+            for j in range(len(board[0])):
+                res[k] = board[i][j]
+                k += 1
+        print(''.join(res))
+        return ''.join(res)

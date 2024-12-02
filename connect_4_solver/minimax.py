@@ -1,5 +1,6 @@
 from connect_4_solver.heuristic import Heuristic
 
+
 class MiniMax:
     def __init__(self):
         self.expanded_nodes = 0
@@ -29,6 +30,8 @@ class MiniMax:
             for c in range(7):
                 if state[c] != '0':
                     continue
+                if depth == 5 and c == 6:
+                    pass
                 new_state = self.simulate_move(state, c, player)
                 eval, _ = self.solve(new_state, depth - 1, alpha, beta,
                                      use_pruning, False, '2' if player == '1' else '1')

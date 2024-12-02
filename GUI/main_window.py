@@ -34,7 +34,7 @@ class MainWindow(QMainWindow):
         # self.stack.addWidget(self.board_window)
         # self.stack.setCurrentWidget(self.board_window)
         tree_visualizer = TreeVisualizer(settings,
-                                         '000000000000000012000002100000122000211201')
+                                         '000000000000000000000000000000000000000000')
         board = BoardWindow(settings, tree_visualizer.update_tree)
         board.setFixedSize(600, 600)
 
