@@ -39,9 +39,10 @@ class MiniMax:
                     maxEval = eval
                     res = c
 
-                self.tree[state]['children'].append((new_state, eval))
-
                 alpha = max(alpha, eval)
+                self.tree[state]['children'].append(
+                    (new_state, eval, alpha, beta))
+
                 if use_pruning and alpha >= beta:
                     break
 
@@ -61,9 +62,10 @@ class MiniMax:
                     minEval = eval
                     res = c
 
-                self.tree[state]['children'].append((new_state, eval))
-
                 beta = min(beta, eval)
+                self.tree[state]['children'].append(
+                    (new_state, eval, alpha, beta))
+
                 if use_pruning and alpha >= beta:
                     break
 

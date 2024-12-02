@@ -48,9 +48,10 @@ class TreeVisualizer(QWidget):
         # widget.setLayout(grid_layout)
         grid_layout.setFixedSize(20 * self.cols, 20 * self.rows)
 
-        curr_label = QLabel(f"Eval: {self.tree[self.board]['score']}\nAlpha: {self.tree[self.board]['alpha']}\nBeta: {self.tree[self.board]['beta']}")
+        curr_label = QLabel(f"Eval: {self.tree[self.board]['score']}\nAlpha: {
+                            self.tree[self.board]['alpha']}\nBeta: {self.tree[self.board]['beta']}")
         curr_label.setAlignment(Qt.AlignCenter)
-        
+
         v = QVBoxLayout()
         v.addWidget(grid_layout, alignment=Qt.AlignCenter)
         v.addWidget(curr_label)
@@ -62,7 +63,7 @@ class TreeVisualizer(QWidget):
 
         if 'children' not in self.tree[self.board]:
             return
-        
+
         # data_label = QLabel(f"Eval: {self.board['eval']}\nAlpha: {self.board['alpha']}\nBeta: {self.board['beta']}")
         # data_label.setAlignment(Qt.AlignCenter)
 
@@ -113,7 +114,8 @@ class TreeVisualizer(QWidget):
         """)
         go_back_button.clicked.connect(self.go_back)
 
-        stats_label = QLabel(f"Expanded Nodes: {self.expanded_nodes}\n\nTime: {self.time:.3f} seconds")
+        stats_label = QLabel(f"Expanded Nodes: {self.expanded_nodes}\n\nTime: {
+                             self.time:.3f} seconds")
         stats_label.setAlignment(Qt.AlignLeft)
         stats_label.setStyleSheet("""
             QLabel {
@@ -130,7 +132,9 @@ class TreeVisualizer(QWidget):
         self.layout.addWidget(stats_label)
 
     def draw_minimax(self, hBox):
-        for nei, eval in self.tree[self.board]['children']:
+        print(self.tree[self.board]['children'])
+
+        for nei, eval, alpha, beta in self.tree[self.board]['children']:
             grid_layout1, self.cells = self.create_board(nei)
             widget1 = self.make_clickable(grid_layout1)
             # widget1.setLayout(grid_layout1)
@@ -140,8 +144,7 @@ class TreeVisualizer(QWidget):
             # widget1.clicked.connect(
             #     lambda nei_val=nei: self.expand_node(nei_val))
 
-            data_label = QLabel(f"Eval: {eval}\nAlpha: {
-                                self.tree[self.board]['alpha']}\nBeta: {self.tree[self.board]['beta']}")
+            data_label = QLabel(f"Eval: {eval}\nAlpha: {alpha}\nBeta: {beta}")
             data_label.setAlignment(Qt.AlignCenter)
 
             vbox = QVBoxLayout()
@@ -164,7 +167,7 @@ class TreeVisualizer(QWidget):
             #     lambda nei_val=nei: self.expand_node(nei_val))
 
             label_str = f"Eval: {eval}\nAlpha: {
-                self.tree[self.board]['alpha']}\nBeta: {self.tree[self.board]['beta']}"
+                self.tree[nei]['alpha']}\nBeta: {self.tree[nei]['beta']}"
             for pr, ev in probs:
                 label_str += f"\n{pr}: {ev}"
 
