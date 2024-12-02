@@ -48,8 +48,8 @@ class TreeVisualizer(QWidget):
         # widget.setLayout(grid_layout)
         grid_layout.setFixedSize(20 * self.cols, 20 * self.rows)
 
-        curr_label = QLabel(f"Eval: {self.tree[self.board]['score']}\nAlpha: {
-                            self.tree[self.board]['alpha']}\nBeta: {self.tree[self.board]['beta']}")
+        curr_label = QLabel(f"Eval: {self.tree[self.board]['score']:.2f}\nAlpha: {
+                            self.tree[self.board]['alpha']:.2f}\nBeta: {self.tree[self.board]['beta']:.2f}")
         curr_label.setAlignment(Qt.AlignCenter)
 
         v = QVBoxLayout()
@@ -132,8 +132,6 @@ class TreeVisualizer(QWidget):
         self.layout.addWidget(stats_label)
 
     def draw_minimax(self, hBox):
-        print(self.tree[self.board]['children'])
-
         for nei, eval, alpha, beta in self.tree[self.board]['children']:
             grid_layout1, self.cells = self.create_board(nei)
             widget1 = self.make_clickable(grid_layout1)
@@ -144,7 +142,8 @@ class TreeVisualizer(QWidget):
             # widget1.clicked.connect(
             #     lambda nei_val=nei: self.expand_node(nei_val))
 
-            data_label = QLabel(f"Eval: {eval}\nAlpha: {alpha}\nBeta: {beta}")
+            data_label = QLabel(f"Eval: {eval:.2f}\nAlpha: {
+                                alpha:.2f}\nBeta: {beta:.2f}")
             data_label.setAlignment(Qt.AlignCenter)
 
             vbox = QVBoxLayout()
@@ -166,8 +165,8 @@ class TreeVisualizer(QWidget):
             # widget1.clicked.connect(
             #     lambda nei_val=nei: self.expand_node(nei_val))
 
-            label_str = f"Eval: {eval}\nAlpha: {
-                self.tree[nei]['alpha']}\nBeta: {self.tree[nei]['beta']}"
+            label_str = f"Eval: {eval:.2f}\nAlpha: {
+                self.tree[nei]['alpha']:.2f}\nBeta: {self.tree[nei]['beta']:.2f}"
             for pr, ev in probs:
                 label_str += f"\n{pr}: {ev}"
 

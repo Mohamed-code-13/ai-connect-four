@@ -235,7 +235,7 @@ class Expectiminimax:
                     )[0]
                     expected_value += cur
                     tmp.append((dr + ' - ' + str(normalized_weight)
-                               [:4], '{:.2f}'.format(cur)))
+                               [:4], f'{cur:.2f}'))
 
                 # Update best score and result
                 if expected_value > maxEval:
