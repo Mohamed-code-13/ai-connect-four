@@ -14,6 +14,7 @@ class Engine:
         self.rows = 6
         self.cols = 7
         self.alg = MiniMax() if is_minimax else Expectiminimax()
+        print('IS_MINIMAX', is_minimax)
         self.score = {
             'Human': 0,
             'Computer': 0
@@ -30,7 +31,7 @@ class Engine:
 
         begin = time.time()
         _, c = self.alg.solve(self.board, self.depth, float('-inf'),
-                                  float('inf'), self.use_pruning, True, player)
+                              float('inf'), self.use_pruning, True, player)
         end = time.time()
         print('Expanded Nodes:', self.alg.expanded_nodes)
         print('Time:', (end-begin), 'sec')
