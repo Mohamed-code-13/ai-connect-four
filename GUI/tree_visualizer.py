@@ -43,17 +43,28 @@ class TreeVisualizer(QWidget):
         # for w in self.arr:
         #     self.layout.removeWidget(w)
         # self.arr = []
-
         grid_layout, _ = self.create_board(self.board)
         # widget = QWidget()
         # widget.setLayout(grid_layout)
         grid_layout.setFixedSize(20 * self.cols, 20 * self.rows)
 
+        curr_label = QLabel(f"Eval: {self.tree[self.board]['score']}\nAlpha: {self.tree[self.board]['alpha']}\nBeta: {self.tree[self.board]['beta']}")
+        curr_label.setAlignment(Qt.AlignCenter)
+        
+        v = QVBoxLayout()
+        v.addWidget(grid_layout, alignment=Qt.AlignCenter)
+        v.addWidget(curr_label)
+
         self.arr.append(grid_layout)
-        self.layout.addWidget(grid_layout, alignment=Qt.AlignCenter)
+        self.arr.append(curr_label)
+        self.layout.addLayout(v)
+        # self.layout.addWidget(grid_layout, alignment=Qt.AlignCenter)
 
         if 'children' not in self.tree[self.board]:
             return
+        
+        # data_label = QLabel(f"Eval: {self.board['eval']}\nAlpha: {self.board['alpha']}\nBeta: {self.board['beta']}")
+        # data_label.setAlignment(Qt.AlignCenter)
 
         h = QHBoxLayout()
         if self.settings['is_minimax']:
@@ -101,8 +112,22 @@ class TreeVisualizer(QWidget):
             }
         """)
         go_back_button.clicked.connect(self.go_back)
+
+        stats_label = QLabel(f"Expanded Nodes: {self.expanded_nodes}\n\nTime: {self.time:.3f} seconds")
+        stats_label.setAlignment(Qt.AlignLeft)
+        stats_label.setStyleSheet("""
+            QLabel {
+                padding: 5px;
+                font-size: 14px;
+                font-family: 'Press Start 2P';
+                color: #333;
+            }
+        """)
+
         self.arr.append(go_back_button)
+        self.arr.append(stats_label)
         self.layout.addWidget(go_back_button, alignment=Qt.AlignCenter)
+        self.layout.addWidget(stats_label)
 
     def draw_minimax(self, hBox):
         for nei, eval in self.tree[self.board]['children']:
@@ -155,17 +180,14 @@ class TreeVisualizer(QWidget):
             hBox.addWidget(container_widget, alignment=Qt.AlignCenter)
 
     def make_clickable(self, widget):
-        # Create a new ClickableWidget
         clickable = ClickableWidget()
 
-        # Set the same geometry and parent as the existing widget
         clickable.setGeometry(widget.geometry())
         if widget.parent():
             widget.setParent(clickable)
 
-        # Use a layout to add the original widget into the ClickableWidget
         layout = QVBoxLayout(clickable)
-        layout.setContentsMargins(0, 0, 0, 0)  # Remove spacing/margins
+        layout.setContentsMargins(0, 0, 0, 0)
         layout.addWidget(widget)
 
         return clickable
@@ -210,9 +232,11 @@ class TreeVisualizer(QWidget):
     def on_clicked(self, c):
         pass
 
-    def update_tree(self, tree, board):
+    def update_tree(self, tree, board, expanded_nodes, time):
         self.tree = tree
         self.board = board
+        self.expanded_nodes = expanded_nodes
+        self.time = time
         self.init_ui()
         self.update()
 
