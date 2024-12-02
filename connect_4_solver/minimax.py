@@ -1,6 +1,5 @@
 from connect_4_solver.heuristic import Heuristic
 
-
 class MiniMax:
     def __init__(self):
         self.expanded_nodes = 0

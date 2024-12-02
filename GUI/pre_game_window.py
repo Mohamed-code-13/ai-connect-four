@@ -21,6 +21,28 @@ class PreGameWindow(QWidget):
         self.title.setFont(QFont("Press Start 2P", 16))
         input_layout.addWidget(self.title)
 
+        self.algorithm_label = QLabel("CHOOSE ARTIFICIAL INTELLIGENCE ALGORITHM")
+        self.algorithm_label.setFont(QFont("Press Start 2P", 12))
+        self.algorithm = QComboBox()
+        self.algorithm.addItems(['Minimax', 'Expectiminimax'])
+        self.algorithm.setStyleSheet("""
+            QComboBox {
+                background-color: #f0f0f0;
+                border: 2px solid #333;
+                border-radius: 5px;
+                padding: 5px;
+                font-size: 12px;
+                font-family: 'Press Start 2P';
+                color: #333;
+            }
+        """)
+
+        alg = QVBoxLayout()
+        alg.addWidget(self.algorithm_label)
+        alg.addWidget(self.algorithm)
+        alg.setSpacing(0)
+        input_layout.addLayout(alg)
+
         self.starting_player_label = QLabel("STARTING PLAYER")
         self.starting_player_label.setFont(QFont("Press Start 2P", 12))
         self.starting_player = QComboBox()
@@ -125,6 +147,7 @@ class PreGameWindow(QWidget):
         self.setLayout(layout)
 
     def start_board(self):
+        is_minimax = self.algorithm.currentText() == 'Minimax'
         starting_player = self.starting_player.currentText()
         human_color = self.player_color.currentText()
         computer_color = 'Red' if human_color == 'Yellow' else 'Yellow'
@@ -132,6 +155,7 @@ class PreGameWindow(QWidget):
         alpha_beta = self.alpha_beta_checkbox.isChecked()
 
         self.start_game(
+            is_minimax=is_minimax,
             starting_player=starting_player,
             human_color=human_color,
             computer_color=computer_color,

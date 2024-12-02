@@ -1,9 +1,10 @@
-from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QHBoxLayout,  QWidget, QApplication, QStackedWidget
+from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QHBoxLayout,  QWidget, QApplication, QStackedWidget, QPushButton
 
 from GUI.tree_visualizer import TreeVisualizer
 
 from .board_window import BoardWindow
 from .pre_game_window import PreGameWindow
+from .display_data import Displayer
 
 
 class MainWindow(QMainWindow):
@@ -36,9 +37,13 @@ class MainWindow(QMainWindow):
                                          '000000000000000012000002100000122000211201')
         board = BoardWindow(settings, tree_visualizer.update_tree)
         board.setFixedSize(600, 600)
+
+        side_panel = QVBoxLayout()
+        side_panel.addWidget(tree_visualizer)
+
         row = QHBoxLayout()
         row.addWidget(board)
-        row.addWidget(tree_visualizer)
+        row.addLayout(side_panel)
 
         w = QWidget()
         w.setLayout(row)

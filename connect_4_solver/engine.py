@@ -1,15 +1,19 @@
 import time
+
 from connect_4_solver.minimax import MiniMax
+from connect_4_solver.expectiminimax import Expectiminimax
+from GUI.end_game import GameWindow
 
 
 class Engine:
-    def __init__(self, board, depth=5, use_pruning=True):
+    def __init__(self, board, depth=5, use_pruning=True, is_minimax=True):
         self.board = board
         self.depth = depth
         self.use_pruning = use_pruning
+        self.is_minimax = is_minimax
         self.rows = 6
         self.cols = 7
-        self.minimax = MiniMax()
+        self.alg = MiniMax() if is_minimax else Expectiminimax()
         self.score = {
             'Human': 0,
             'Computer': 0
@@ -21,24 +25,24 @@ class Engine:
         self.update_score(position, name)
 
     def computer_move(self, player, name):
-        self.minimax.expanded_nodes = 0
-        self.minimax.tree = {}
+        self.alg.expanded_nodes = 0
+        self.alg.tree = {}
 
         begin = time.time()
-        _, c = self.minimax.solve(self.board, self.depth, float('-inf'),
+        _, c = self.alg.solve(self.board, self.depth, float('-inf'),
                                   float('inf'), self.use_pruning, True, player)
         end = time.time()
-        print('Expanded Nodes:', self.minimax.expanded_nodes)
+        print('Expanded Nodes:', self.alg.expanded_nodes)
         print('Time:', (end-begin), 'sec')
-        # print(self.minimax.tree)
+        # print(self.alg.tree)
 
         pos = self.get_position(c)
         self.move(pos, player, name)
         return {
             'column': c,
             'time': end-begin,
-            'expanded_nodes': self.minimax.expanded_nodes,
-            'tree': self.minimax.tree
+            'expanded_nodes': self.alg.expanded_nodes,
+            'tree': self.alg.tree
         }
 
     def get_position(self, c):
@@ -157,7 +161,8 @@ class Engine:
 
     def get_winner(self):
         if self.score['Human'] > self.score['Computer']:
-            return 'Human Won!'
+            GameWindow().show_winner_popup('Human')
         elif self.score['Human'] < self.score['Computer']:
-            return 'Computer Won!'
-        return 'It\'s Tie!'
+            GameWindow().show_winner_popup('Computer')
+        else:
+            GameWindow().show_winner_popup('Tie')

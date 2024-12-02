@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QGridLayout, QVBoxLayout, QHBoxLayout,  QWidget, QLabel
+from PyQt5.QtWidgets import QGridLayout, QPushButton, QVBoxLayout, QHBoxLayout,  QWidget, QLabel
 from PyQt5.QtCore import Qt, pyqtSignal
 
 from GUI.cell import Cell
@@ -25,6 +25,7 @@ class TreeVisualizer(QWidget):
         self.rows = 6
         self.cols = 7
         self.arr = []
+        self.prev = []
         self.layout = QVBoxLayout()
         self.setLayout(self.layout)
 
@@ -32,12 +33,17 @@ class TreeVisualizer(QWidget):
 
     def init_ui(self):
 
+        for w in self.arr:
+            self.layout.removeWidget(w)
+            w.deleteLater()
+        self.arr = []
+
         if not self.tree or self.board not in self.tree:
             return
 
-        for w in self.arr:
-            self.layout.removeWidget(w)
-        self.arr = []
+        # for w in self.arr:
+        #     self.layout.removeWidget(w)
+        # self.arr = []
 
         grid_layout, _ = self.create_board(self.board)
         # widget = QWidget()
@@ -47,6 +53,9 @@ class TreeVisualizer(QWidget):
         self.arr.append(grid_layout)
         self.layout.addWidget(grid_layout, alignment=Qt.AlignCenter)
 
+        if 'children' not in self.tree[self.board]:
+            return
+        
         h = QHBoxLayout()
         for nei, eval in self.tree[self.board]['children']:
             grid_layout1, self.cells = self.create_board(nei)
@@ -54,14 +63,16 @@ class TreeVisualizer(QWidget):
             # widget1.setLayout(grid_layout1)
             widget1.setFixedSize(20 * self.cols, 20 * self.rows)
             widget1.clicked.connect(
-                lambda nei_val=nei: self.expand_node(nei_val))
+                lambda nei_val=nei: (self.prev.append(self.board), self.expand_node(nei_val)))
+            # widget1.clicked.connect(
+            #     lambda nei_val=nei: self.expand_node(nei_val))
 
-            eval_label = QLabel(f"Eval: {eval}")
-            eval_label.setAlignment(Qt.AlignCenter)
+            data_label = QLabel(f"Eval: {eval}\nAlpha: {self.tree[self.board]['alpha']}\nBeta: {self.tree[self.board]['beta']}")
+            data_label.setAlignment(Qt.AlignCenter)
 
             vbox = QVBoxLayout()
             vbox.addWidget(widget1, alignment=Qt.AlignCenter)
-            vbox.addWidget(eval_label, alignment=Qt.AlignCenter)
+            vbox.addWidget(data_label, alignment=Qt.AlignCenter)
 
             container_widget = QWidget()
             container_widget.setLayout(vbox)
@@ -72,6 +83,22 @@ class TreeVisualizer(QWidget):
 
         self.arr.append(widget)
         self.layout.addWidget(widget)
+
+        go_back_button = QPushButton("Go Back")
+        go_back_button.setStyleSheet("""
+            QPushButton {
+                background-color: #333;
+                border: 2px solid #333;
+                border-radius: 5px;
+                padding: 5px;
+                font-size: 12px;
+                font-family: 'Press Start 2P';
+                color: #f0f0f0;
+            }
+        """)
+        go_back_button.clicked.connect(self.go_back)
+        self.arr.append(go_back_button)
+        self.layout.addWidget(go_back_button, alignment=Qt.AlignCenter)
     
     def make_clickable(self, widget):
         # Create a new ClickableWidget
@@ -138,3 +165,9 @@ class TreeVisualizer(QWidget):
         self.board = state
         self.init_ui()
         self.update()
+
+    def go_back(self):
+        if self.prev:
+            self.board = self.prev.pop()
+            self.init_ui()
+            self.update()
