@@ -4,6 +4,7 @@ from GUI.tree_visualizer import TreeVisualizer
 
 from .board_window import BoardWindow
 from .pre_game_window import PreGameWindow
+from .display_data import Displayer
 
 
 class MainWindow(QMainWindow):
@@ -38,9 +39,7 @@ class MainWindow(QMainWindow):
         board.setFixedSize(600, 600)
 
         side_panel = QVBoxLayout()
-        # self.pop_button = QPushButton("Go Back")
         side_panel.addWidget(tree_visualizer)
-        # side_panel.addWidget(self.pop_button)
 
         row = QHBoxLayout()
         row.addWidget(board)

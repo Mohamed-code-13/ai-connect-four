@@ -147,7 +147,7 @@ class PreGameWindow(QWidget):
         self.setLayout(layout)
 
     def start_board(self):
-        is_minimax = True if self.algorithm.currentText() == 'Minimax' else False
+        is_minimax = self.algorithm.currentText() == 'Minimax'
         starting_player = self.starting_player.currentText()
         human_color = self.player_color.currentText()
         computer_color = 'Red' if human_color == 'Yellow' else 'Yellow'

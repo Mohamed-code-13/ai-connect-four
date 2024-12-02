@@ -33,12 +33,17 @@ class TreeVisualizer(QWidget):
 
     def init_ui(self):
 
+        for w in self.arr:
+            self.layout.removeWidget(w)
+            w.deleteLater()
+        self.arr = []
+
         if not self.tree or self.board not in self.tree:
             return
 
-        for w in self.arr:
-            self.layout.removeWidget(w)
-        self.arr = []
+        # for w in self.arr:
+        #     self.layout.removeWidget(w)
+        # self.arr = []
 
         grid_layout, _ = self.create_board(self.board)
         # widget = QWidget()
@@ -57,17 +62,17 @@ class TreeVisualizer(QWidget):
             widget1 = self.make_clickable(grid_layout1)
             # widget1.setLayout(grid_layout1)
             widget1.setFixedSize(20 * self.cols, 20 * self.rows)
-            # widget1.clicked.connect(
-            #     lambda nei_val=nei: (self.prev.append(self.board), print(self.prev), self.expand_node(nei_val)))
             widget1.clicked.connect(
-                lambda nei_val=nei: self.expand_node(nei_val))
+                lambda nei_val=nei: (self.prev.append(self.board), self.expand_node(nei_val)))
+            # widget1.clicked.connect(
+            #     lambda nei_val=nei: self.expand_node(nei_val))
 
-            eval_label = QLabel(f"Eval: {eval}")
-            eval_label.setAlignment(Qt.AlignCenter)
+            data_label = QLabel(f"Eval: {eval}\nAlpha: {self.tree[self.board]['alpha']}\nBeta: {self.tree[self.board]['beta']}")
+            data_label.setAlignment(Qt.AlignCenter)
 
             vbox = QVBoxLayout()
             vbox.addWidget(widget1, alignment=Qt.AlignCenter)
-            vbox.addWidget(eval_label, alignment=Qt.AlignCenter)
+            vbox.addWidget(data_label, alignment=Qt.AlignCenter)
 
             container_widget = QWidget()
             container_widget.setLayout(vbox)
@@ -80,6 +85,17 @@ class TreeVisualizer(QWidget):
         self.layout.addWidget(widget)
 
         go_back_button = QPushButton("Go Back")
+        go_back_button.setStyleSheet("""
+            QPushButton {
+                background-color: #333;
+                border: 2px solid #333;
+                border-radius: 5px;
+                padding: 5px;
+                font-size: 12px;
+                font-family: 'Press Start 2P';
+                color: #f0f0f0;
+            }
+        """)
         go_back_button.clicked.connect(self.go_back)
         self.arr.append(go_back_button)
         self.layout.addWidget(go_back_button, alignment=Qt.AlignCenter)
@@ -151,9 +167,7 @@ class TreeVisualizer(QWidget):
         self.update()
 
     def go_back(self):
-        # Check if there is a previous state to revert to
         if self.prev:
-            self.board = self.prev.pop()  # Revert to the last parent state
-            print(self.prev)
-            self.init_ui()  # Reinitialize the UI to reflect the parent state
+            self.board = self.prev.pop()
+            self.init_ui()
             self.update()
