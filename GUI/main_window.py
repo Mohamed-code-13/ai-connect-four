@@ -4,8 +4,6 @@ from GUI.tree_visualizer import TreeVisualizer
 
 from .board_window import BoardWindow
 from .pre_game_window import PreGameWindow
-from .display_data import Displayer
-
 
 class MainWindow(QMainWindow):
     def __init__(self):
