@@ -157,4 +157,4 @@ class BoardWindow(QWidget):
         player = '2'
         res = self.engine.computer_move(player, self.turn)
         self.update_move(res['column'])
-        self.update_tree(res['tree'], board)
+        self.update_tree(res['tree'], board, res['expanded_nodes'], res['time'])
