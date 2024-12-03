@@ -5,7 +5,7 @@ from GUI.cell import Cell
 
 
 class ClickableWidget(QWidget):
-    clicked = pyqtSignal()  # Define a custom signal
+    clicked = pyqtSignal()
 
     def __init__(self):
         super().__init__()
@@ -40,12 +40,7 @@ class TreeVisualizer(QWidget):
         if not self.tree or self.board not in self.tree:
             return
 
-        # for w in self.arr:
-        #     self.layout.removeWidget(w)
-        # self.arr = []
         grid_layout, _ = self.create_board(self.board)
-        # widget = QWidget()
-        # widget.setLayout(grid_layout)
         grid_layout.setFixedSize(20 * self.cols, 20 * self.rows)
 
         curr_label = QLabel(f"Eval: {self.tree[self.board]['score']:.2f}\nAlpha: {
@@ -59,40 +54,15 @@ class TreeVisualizer(QWidget):
         self.arr.append(grid_layout)
         self.arr.append(curr_label)
         self.layout.addLayout(v)
-        # self.layout.addWidget(grid_layout, alignment=Qt.AlignCenter)
 
         if 'children' not in self.tree[self.board]:
             return
-
-        # data_label = QLabel(f"Eval: {self.board['eval']}\nAlpha: {self.board['alpha']}\nBeta: {self.board['beta']}")
-        # data_label.setAlignment(Qt.AlignCenter)
 
         h = QHBoxLayout()
         if self.settings['is_minimax']:
             self.draw_minimax(h)
         else:
             self.draw_expected_minimax(h)
-        # for nei, eval in self.tree[self.board]['children']:
-        #     grid_layout1, self.cells = self.create_board(nei)
-        #     widget1 = self.make_clickable(grid_layout1)
-        #     # widget1.setLayout(grid_layout1)
-        #     widget1.setFixedSize(20 * self.cols, 20 * self.rows)
-        #     widget1.clicked.connect(
-        #         lambda nei_val=nei: (self.prev.append(self.board), self.expand_node(nei_val)))
-        #     # widget1.clicked.connect(
-        #     #     lambda nei_val=nei: self.expand_node(nei_val))
-
-        #     data_label = QLabel(f"Eval: {eval}\nAlpha: {
-        #                         self.tree[self.board]['alpha']}\nBeta: {self.tree[self.board]['beta']}")
-        #     data_label.setAlignment(Qt.AlignCenter)
-
-        #     vbox = QVBoxLayout()
-        #     vbox.addWidget(widget1, alignment=Qt.AlignCenter)
-        #     vbox.addWidget(data_label, alignment=Qt.AlignCenter)
-
-        #     container_widget = QWidget()
-        #     container_widget.setLayout(vbox)
-        #     h.addWidget(container_widget, alignment=Qt.AlignCenter)
 
         widget = QWidget()
         widget.setLayout(h)
@@ -135,12 +105,9 @@ class TreeVisualizer(QWidget):
         for nei, eval, alpha, beta in self.tree[self.board]['children']:
             grid_layout1, self.cells = self.create_board(nei)
             widget1 = self.make_clickable(grid_layout1)
-            # widget1.setLayout(grid_layout1)
             widget1.setFixedSize(20 * self.cols, 20 * self.rows)
             widget1.clicked.connect(
                 lambda nei_val=nei: (self.prev.append(self.board), self.expand_node(nei_val)))
-            # widget1.clicked.connect(
-            #     lambda nei_val=nei: self.expand_node(nei_val))
 
             data_label = QLabel(f"Eval: {eval:.2f}\nAlpha: {
                                 alpha:.2f}\nBeta: {beta:.2f}")
@@ -158,12 +125,9 @@ class TreeVisualizer(QWidget):
         for nei, eval, probs in self.tree[self.board]['children']:
             grid_layout1, self.cells = self.create_board(nei)
             widget1 = self.make_clickable(grid_layout1)
-            # widget1.setLayout(grid_layout1)
             widget1.setFixedSize(20 * self.cols, 20 * self.rows)
             widget1.clicked.connect(
                 lambda nei_val=nei: (self.prev.append(self.board), self.expand_node(nei_val)))
-            # widget1.clicked.connect(
-            #     lambda nei_val=nei: self.expand_node(nei_val))
 
             label_str = f"Eval: {eval:.2f}\nAlpha: {
                 self.tree[nei]['alpha']:.2f}\nBeta: {self.tree[nei]['beta']:.2f}"
@@ -208,17 +172,16 @@ class TreeVisualizer(QWidget):
 
                 cells[r][c] = Cell(r, c, self.on_clicked, 20, 20)
 
-                cell_size = 15  # Adjust size as needed
+                cell_size = 15 
                 cells[r][c].setFixedSize(cell_size, cell_size)
 
-                # Apply circular style
-                border_color = '#001F54'  # Oxford Blue
+                border_color = '#001F54'
                 background_color = self.settings['human_color'] if val == '1' else self.settings[
                     'computer_color'] if val == '2' else '#FFFFFF'
                 cells[r][c].setStyleSheet(f"""
                     background-color: {background_color};
                     border: 2px solid {border_color};
-                    border-radius: {cell_size // 2}px;  /* Makes it circular */
+                    border-radius: {cell_size // 2}px;
                 """)
 
                 if val == '1' or val == '2':

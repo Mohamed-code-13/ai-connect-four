@@ -1,9 +1,8 @@
 from PyQt5.QtWidgets import QMainWindow, QMessageBox, QApplication
 
-class GameWindow(QMainWindow):  # Assuming your game inherits from QMainWindow
+class GameWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        # Your initialization code here...
 
     def show_winner_popup(self, winner):
         msg = QMessageBox()

@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QHBoxLayout, QWidget, QLabel, QStackedWidget, QGridLayout
+from PyQt5.QtWidgets import QVBoxLayout, QHBoxLayout, QWidget, QLabel, QGridLayout
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import Qt
 
@@ -79,9 +79,7 @@ class BoardWindow(QWidget):
 
         layout = QVBoxLayout()
         layout.addLayout(scoreboard)
-        # layout.addWidget(self.computer_label)
         layout.addWidget(self.grid_layout)
-        # layout.addWidget(self.human_label)
         layout.addWidget(self.turn_label)
 
         self.setLayout(layout)
@@ -100,17 +98,16 @@ class BoardWindow(QWidget):
 
                 cells[r][c] = Cell(r, c, self.on_clicked)
 
-                cell_size = 75  # Adjust size as needed
+                cell_size = 75
                 cells[r][c].setFixedSize(cell_size, cell_size)
 
-                # Apply circular style
                 border_color = '#055c9d'
                 background_color = self.settings['human_color'] if val == '1' else self.settings[
                     'computer_color'] if val == '2' else '#FFFFFF'
                 cells[r][c].setStyleSheet(f"""
                     background-color: {background_color};
                     border: 4px solid {border_color};
-                    border-radius: {cell_size // 2}px;  /* Makes it circular */
+                    border-radius: {cell_size // 2}px;
                 """)
 
                 if val == '1' or val == '2':
@@ -147,8 +144,6 @@ class BoardWindow(QWidget):
 
                 if self.turn == 'Human':
                     self.move(r, c)
-                # else:
-                #     self.computer_move()
 
                 self.human_label.setText(
                     f'{self.engine.score['Human']}')

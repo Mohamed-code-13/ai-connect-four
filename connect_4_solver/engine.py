@@ -35,7 +35,6 @@ class Engine:
         end = time.time()
         print('Expanded Nodes:', self.alg.expanded_nodes)
         print('Time:', (end-begin), 'sec')
-        # print(self.alg.tree)
 
         pos = self.get_position(c)
         self.move(pos, player, name)

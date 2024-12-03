@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QHBoxLayout,  QWidget, QApplication, QStackedWidget, QPushButton
+from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QHBoxLayout,  QWidget, QStackedWidget
 
 from GUI.tree_visualizer import TreeVisualizer
 
@@ -22,15 +22,11 @@ class MainWindow(QMainWindow):
 
         main_layout = QVBoxLayout()
         main_layout.addWidget(self.stack)
-        # self.setLayout(main_layout)
         l = QWidget()
         l.setLayout(main_layout)
         self.setCentralWidget(l)
 
     def start_game(self, **settings):
-        # self.board_window = BoardWindow(settings)
-        # self.stack.addWidget(self.board_window)
-        # self.stack.setCurrentWidget(self.board_window)
         tree_visualizer = TreeVisualizer(settings,
                                          '000000000000000000000000000000000000000000')
         board = BoardWindow(settings, tree_visualizer.update_tree)

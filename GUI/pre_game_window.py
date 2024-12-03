@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QHBoxLayout, QLabel, QWidget, QComboBox, QSpinBox, QCheckBox, QPushButton
+from PyQt5.QtWidgets import QVBoxLayout, QHBoxLayout, QLabel, QWidget, QComboBox, QSpinBox, QCheckBox, QPushButton
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import Qt
 
@@ -141,7 +141,6 @@ class PreGameWindow(QWidget):
 
         button_layout.addWidget(self.start_button)
 
-        # layout.addWidget(self.title)
         layout.addLayout(input_layout)
         layout.addLayout(button_layout)
         self.setLayout(layout)
