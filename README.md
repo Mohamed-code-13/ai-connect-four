@@ -36,6 +36,7 @@ Connect Four is a two-player game where players alternate dropping coloured disc
 
 - Python3.
 - PyQt5 library for GUI and AI.
+- "Press Start 2P" font (for the best gaming experience)
 
 ### Running the Project
 
